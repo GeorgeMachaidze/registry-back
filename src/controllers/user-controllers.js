@@ -1,29 +1,33 @@
-export const getAllUsers = async (req, res) => {
-  const users = [
-    {
-      id: 1,
-      name: "Alice",
-      surname: "Wonderland",
-      email: "alice@example.com",
-    },
-    {
-      id: 2,
-      name: "Bob",
-      surname: "Boboshidze",
-      email: "bob@example.com",
-    },
-    {
-      id: 3,
-      name: "Charlie",
-      surname: "Leclerrrrr",
-      email: "charlie@example.com",
-    },
-  ];
+import User from "../models/User.js";
 
-  return res.json(users);
-};
-export const createUser = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
+    const users = await User.find();
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error, "this.error");
+    return res.status(500).json({
+      message: "error while fetching users",
+    });
+  }
+};
+
+export const createUser = async (req, res) => {
+  const { name, surname } = req.body;
+
+  try {
+    if (!name || !surname) {
+      return res.status(400).json({
+        message: "Name and surname are required",
+      });
+    }
+    const user = new User({ name, surname });
+    await user.save();
     res.status(201).json({ message: "User created successfully" });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error, "this.error");
+    return res.status(500).json({
+      message: "error while create users",
+    });
+  }
 };
