@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { v4 as uuid } from "uuid";
 
-const { String, Number } = Schema.Types;
+const { String } = Schema.Types;
 
 const userSchema = new Schema({
   name: {
@@ -10,6 +11,12 @@ const userSchema = new Schema({
   surname: {
     type: String,
     require: true,
+  },
+  id: {
+    type: String,
+    default: uuid,
+    require: true,
+    unique: true,
   },
 });
 const User = model("User", userSchema);
